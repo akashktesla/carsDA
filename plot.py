@@ -1,15 +1,18 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt  
+from mpl_toolkits import mplot3d
 
 class car:
-    def __init__(self,name,ts,mvsold,avsold,leprice,heprice):
+    def __init__(self,name,ts,mvsold,avsold,leprice,heprice,mwp,tdv):
         self.name = name
         self.totalsales = ts
         self.leprice = leprice 
         self.heprice = heprice
         self.mvsold = mvsold
         self.avsold = avsold
+        self.mwp = mwp
+        self.tdv = tdv
 
 
 def plot1(cars):
@@ -64,6 +67,55 @@ def plot4(cars):
     plt.legend()
     plt.show()
 
+def plot5(cars):
+    x = [var.name for var in cars]
+    y = [var.totalsales for var in cars]
+    plt.pie(y,labels = x)
+    plt.title("yearly sales variation amoung models")
+    plt.show()
+    
+
+def plot6(cars):
+    x = [var.name for var in cars]
+    plot1_cars = sorted(cars, key=lambda x: x.mwp)
+    y = [var.mwp for var in plot1_cars ]
+    plt.bar(x,y)
+    plt.title("maximum waiting period for each model")
+    plt.yticks(range(0,100,10))
+    plt.ylabel("maximum waiting period(days)")
+    plt.xlabel("car models")
+    plt.show()
+
+def plot7(cars):
+    ax = plt.axes(projection = "3d")
+    x1 = [var.name for var in cars]
+    # print(x) 
+    # plt.xticks(x)
+    x = [1,2,3,4,5,6,7,8,9,10]
+    y = [var.tdv for var in cars]
+    xpos = [1,2,3,4,5,6,7,8,9,10] 
+    ypos = [2,4,6,8,10,12,14,16,18,20] 
+    ypos = [3,24,5,2,34,4,2,1,4,3]
+    zpos = np.zeros(10)
+    # zpos = [1,2,3,4,5,6,7,8,9,10]
+    plt.title("availability of number of test drive vechicles VS annual sales for each model")
+    plt.yticks([2,1,0])
+    plt.xticks([1,2,3,4,5,6,7,8,9,10])
+
+    xsize = np.ones(10)*0.6
+    ysize = np.ones(10)*0.6
+    zsize = [var.totalsales for var in cars]
+    print(f'totalsales: {zsize}')
+    # zsize = [124,132,234,3,34,43,3,21,234,23]
+    # zsize = [10,9,8,7,6,5,4,3,2,1]
+    # zsize = np.ones(10)
+    ax.bar3d(x,y,zpos,xsize,ysize,zsize,color = "#E02050")
+    ax.set_xticklabels(x1)
+
+    plt.show()
+
+
+
 
 def main():
     aki = pd.read_excel("data.xlsx")
@@ -76,10 +128,15 @@ def main():
         avsold = aki.iloc[i,15]
         leprice = aki.iloc[i,16]
         heprice = aki.iloc[i,18]
-        cars.append(car(name,ts,mvsold,avsold,leprice,heprice))
+        mwp = aki.iloc[i,20]
+        tdv = aki.iloc[i,21]
+        cars.append(car(name,ts,mvsold,avsold,leprice,heprice,mwp,tdv))
     # plot1(cars)
     # plot2(aki)
     # plot3(cars)
-    plot4(cars)
+    # plot4(cars)
+    # plot5(cars)
+    # plot6(cars)
+    plot7(cars)
 
 main()
