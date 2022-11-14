@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 
 class car:
-    def __init__(self,name,ts,mvsold,avsold,leprice,heprice,mwp,tdv):
+    def __init__(self,name,ts,mvsold,avsold,leprice,heprice,mwp,tdv,pp,plv,phv):
         self.name = name
         self.totalsales = ts
         self.leprice = leprice 
@@ -13,6 +13,9 @@ class car:
         self.avsold = avsold
         self.mwp = mwp
         self.tdv = tdv
+        self.pp = pp
+        self.plv = plv
+        self.phv = phv
 
 
 def plot1(cars):
@@ -70,7 +73,7 @@ def plot4(cars):
 def plot5(cars):
     x = [var.name for var in cars]
     y = [var.totalsales for var in cars]
-    plt.pie(y,labels = x)
+    plt.pie(y,labels = x,autopct='%.0f%%')
     plt.title("yearly sales variation amoung models")
     plt.show()
     
@@ -110,12 +113,32 @@ def plot7(cars):
     # zsize = [10,9,8,7,6,5,4,3,2,1]
     # zsize = np.ones(10)
     ax.bar3d(x,y,zpos,xsize,ysize,zsize,color = "#E02050")
-    ax.set_xticklabels(x1)
-
     plt.show()
 
+def plot8(cars):
+    x = [var.name for var in cars]
+    y = [var.plv for var in cars ]
+    plt.pie(y,labels = x,autopct='%.0f%%')
+    plt.title("showroom profits comparison for low-end variants")
+    plt.show()
 
+def plot9(cars):
+    x = [var.name for var in cars]
+    y = [var.phv for var in cars ]
+    plt.pie(y,labels = x,autopct='%.0f%%')
+    plt.title("showroom profits comparison for high-end variants")
+    plt.show()
+def plot10(cars):
+    x = [var.name for var in cars]
+    plot1_cars = sorted(cars, key=lambda x: x.pp)
+    y = [var.pp for var in plot1_cars ]
 
+    plt.bar(x,y)
+    plt.ylabel("showroom's profit percentage from ex-showroom price")
+    plt.xlabel("car models")
+    plt.yticks(list(range(2,10)))
+    plt.title("profit percentage for each model")
+    plt.show()
 
 def main():
     aki = pd.read_excel("data.xlsx")
@@ -130,13 +153,19 @@ def main():
         heprice = aki.iloc[i,18]
         mwp = aki.iloc[i,20]
         tdv = aki.iloc[i,21]
-        cars.append(car(name,ts,mvsold,avsold,leprice,heprice,mwp,tdv))
+        pp = aki.iloc[i,22]
+        plv = aki.iloc[i,23]
+        phv = aki.iloc[i,24]
+
+        cars.append(car(name,ts,mvsold,avsold,leprice,heprice,mwp,tdv,pp,plv,phv))
     # plot1(cars)
     # plot2(aki)
     # plot3(cars)
     # plot4(cars)
     # plot5(cars)
     # plot6(cars)
-    plot7(cars)
-
+    # plot7(cars)
+    # plot8(cars)
+    # plot9(cars)
+    plot10(cars)
 main()
